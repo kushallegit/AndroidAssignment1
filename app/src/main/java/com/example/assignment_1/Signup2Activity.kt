@@ -1,16 +1,19 @@
 package com.example.assignment_1
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.example.assignment_1.databinding.ActivitySignup2Binding
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
 
 class Signup2Activity : AppCompatActivity() {
 
+    // ViewBinding instance
+    private lateinit var binding: ActivitySignup2Binding
+
+    // Strong password validation
     private fun isStrongPassword(p: String): Boolean {
         if (p.length !in 8..15) return false
         val hasCapital = p.any { it.isUpperCase() }
@@ -18,7 +21,7 @@ class Signup2Activity : AppCompatActivity() {
         return hasCapital && hasSpecial
     }
 
-    // letters + numbers only, 3–30 chars
+    // Username validation (letters + numbers only, 3–30 chars)
     private fun isValidUsername(u: String): Boolean {
         return u.length in 3..30 && u.all { it.isLetterOrDigit() }
     }
@@ -26,24 +29,22 @@ class Signup2Activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_signup2)
 
-        // 🔹 initialize Firebase
+        // Inflate layout via ViewBinding
+        binding = ActivitySignup2Binding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // Initialize Firebase
         FirebaseApp.initializeApp(this)
         val db = FirebaseFirestore.getInstance()
 
-        val etUser = findViewById<EditText>(R.id.etUser)
-        val etPass = findViewById<EditText>(R.id.etPass)
-        val etConfirm = findViewById<EditText>(R.id.etConfirm)
-        val btnSignup = findViewById<Button>(R.id.btnDoSignup)
-        val btnBack = findViewById<Button>(R.id.btnBack)
+        // 🔹 Signup button logic
+        binding.btnDoSignup.setOnClickListener {
+            val username = binding.etUser.text.toString().trim()
+            val pass = binding.etPass.text.toString()
+            val conf = binding.etConfirm.text.toString()
 
-        btnSignup.setOnClickListener {
-            val username = etUser.text.toString().trim()
-            val pass = etPass.text.toString()
-            val conf = etConfirm.text.toString()
-
-            // username validation (letters + numbers only)
+            // Validate username
             if (!isValidUsername(username)) {
                 Toast.makeText(
                     this,
@@ -53,13 +54,13 @@ class Signup2Activity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // password match check
+            // Check password match
             if (pass != conf) {
                 Toast.makeText(this, "Passwords don’t match", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // strong password check
+            // Check strong password
             if (!isStrongPassword(pass)) {
                 Toast.makeText(
                     this,
@@ -69,22 +70,25 @@ class Signup2Activity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // 🔹 save to Firestore
+            // 🔹 Save to Firestore
             val data = hashMapOf(
                 "username" to username,
-                "password" to pass    // ⚠️ demo only
+                "password" to pass // avoid storing plain text in real apps
             )
 
             db.collection("users_online").document(username).set(data)
                 .addOnSuccessListener {
                     Toast.makeText(this, "Saved online (Firestore)", Toast.LENGTH_SHORT).show()
-                    finish()   // go back to previous page
+                    finish() // go back to previous page
                 }
                 .addOnFailureListener { e ->
                     Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
 
-        btnBack.setOnClickListener { finish() }
+        // 🔹 Back button logic
+        binding.btnBack.setOnClickListener {
+            finish()
+        }
     }
 }

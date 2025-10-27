@@ -2,33 +2,29 @@ package com.example.assignment_1
 
 import android.content.Context
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.example.assignment_1.databinding.ActivitySignupBinding
 
 class SignupActivity : AppCompatActivity() {
+
+    // Declare ViewBinding variable
+    private lateinit var binding: ActivitySignupBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_signup)
 
+        // Inflate layout with ViewBinding
+        binding = ActivitySignupBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        // Find views
-        val etUser = findViewById<EditText>(R.id.etUser)
-        val etPass = findViewById<EditText>(R.id.etPass)
-        val etConfirm = findViewById<EditText>(R.id.etConfirm)
-        val btnSignup = findViewById<Button>(R.id.btnDoSignup)
-        val btnBack = findViewById<Button>(R.id.btn_back)
-
-        // Save credentials locally (SharedPreferences)
-        btnSignup.setOnClickListener {
-            val username = etUser.text.toString().trim()
-            val password = etPass.text.toString()
-            val confirm = etConfirm.text.toString()
+        // 🔹 Signup button logic
+        binding.btnDoSignup.setOnClickListener {
+            val username = binding.etUser.text.toString().trim()
+            val password = binding.etPass.text.toString()
+            val confirm = binding.etConfirm.text.toString()
 
             if (username.isEmpty() || password.isEmpty() || confirm.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
@@ -40,6 +36,7 @@ class SignupActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            // Save credentials locally using SharedPreferences
             val sharedPref = getSharedPreferences("local_auth", Context.MODE_PRIVATE)
             sharedPref.edit()
                 .putString("username", username)
@@ -50,8 +47,8 @@ class SignupActivity : AppCompatActivity() {
             finish() // Go back to Main Page
         }
 
-        // Back button to main page
-        btnBack.setOnClickListener {
+        // 🔹 Back button logic
+        binding.btnBack.setOnClickListener {
             finish()
         }
     }

@@ -2,33 +2,33 @@ package com.example.assignment_1
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.example.assignment_1.databinding.ActivityLogin2Binding
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
 
 class Login2Activity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityLogin2Binding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_login2)
+
+        // Inflate layout with ViewBinding
+        binding = ActivityLogin2Binding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // Initialize Firebase
         FirebaseApp.initializeApp(this)
         val db = FirebaseFirestore.getInstance()
 
-        val etUser = findViewById<EditText>(R.id.etUser2)
-        val etPass = findViewById<EditText>(R.id.etPass2)
-        val btnLogin = findViewById<Button>(R.id.btnDoLogin2)
-        val btnBack = findViewById<Button>(R.id.btnBack)
-
-        btnLogin.setOnClickListener {
-            val username = etUser.text.toString().trim()
-            val password = etPass.text.toString()
+        // 🔹 Login button logic
+        binding.btnDoLogin2.setOnClickListener {
+            val username = binding.etUser2.text.toString().trim()
+            val password = binding.etPass2.text.toString()
 
             if (username.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please enter both username and password", Toast.LENGTH_SHORT).show()
@@ -42,8 +42,10 @@ class Login2Activity : AppCompatActivity() {
                         val savedPass = doc.getString("password") ?: ""
                         if (savedPass == password) {
                             Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
-                            startActivity(Intent(this, WelcomeActivity2::class.java)
-                                .putExtra("username", username))
+                            startActivity(
+                                Intent(this, WelcomeActivity2::class.java)
+                                    .putExtra("username", username)
+                            )
                         } else {
                             Toast.makeText(this, "Incorrect password", Toast.LENGTH_SHORT).show()
                         }
@@ -56,6 +58,9 @@ class Login2Activity : AppCompatActivity() {
                 }
         }
 
-        btnBack.setOnClickListener { finish() }
+        // 🔹 Back button logic
+        binding.btnBack.setOnClickListener {
+            finish()
+        }
     }
 }
