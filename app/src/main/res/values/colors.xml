@@ -1,0 +1,15 @@
+<resources>
+    <!-- Base colors -->
+    <color name="colorPrimary">#5E60CE</color> <!-- Bright violet-blue -->
+    <color name="colorPrimaryVariant">#6930C3</color>
+    <color name="colorSecondary">#64DFDF</color> <!-- Turquoise accent -->
+    <color name="colorBackground">#FFFFFF</color>
+    <color name="colorSurface">#F5F5F5</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorOnBackground">#000000</color>
+    <color name="colorOnSurface">#333333</color>
+
+    <!-- Optional extra accents -->
+    <color name="colorAccentLight">#80FFDB</color>
+    <color name="colorError">#FF5252</color>
+</resources>
